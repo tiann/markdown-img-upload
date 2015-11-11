@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.weishu.markdownimg</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<array/>
+		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8BFF9926-79DA-413A-A4EB-63DB997DF739</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>weishu</string>
+	<key>description</key>
+	<string>Utility to simplify the img upload in markdown</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>markdown img</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>9</integer>
+				<key>hotmod</key>
+				<integer>1310720</integer>
+				<key>hotstring</key>
+				<string>V</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>query = "{query}"
+from clipboard import get_paste_img_file
+from upload import upload_qiniu
+import os
+import subprocess
+
+def noti(msg, title="notice"):
+    os.system('osascript -e \'display notification "%s" with title "%s"\'' % (msg, title))
+
+url = "http://7sbqce.com1.z0.glb.clouddn.com/markdown"
+
+img_file = get_paste_img_file()
+if img_file:
+    # has file
+    name = os.path.split(img_file)[1]
+    size_str = subprocess.check_output('sips -g pixelWidth %s | tail -n1 | cut -d" " -f4' % img_file, shell=True)
+    size = int(size_str.strip()) / 2
+    markdown_url = '&lt;img src="%s/%s" width="%d"/&gt;' % (url, name, size)
+    # make it to clipboard
+    os.system("echo '%s' | pbcopy" % markdown_url)
+    os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
+    ret = upload_qiniu(img_file)
+    if not ret: noti("upload image to qiniu failed")
+else:
+    noti("there are no image file in clipboard")
+    </string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8BFF9926-79DA-413A-A4EB-63DB997DF739</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>http://www.tianweishu.com</string>
+</dict>
+</plist>
