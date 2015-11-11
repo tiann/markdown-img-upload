@@ -38,9 +38,10 @@ def open_with_editor(filepath):
 def generate_config_file():
     import textwrap
     config_file_init_content = '''\
+    ; 详细设置见 https://github.com/tiann/markdown-img-upload
     [qiniu]
     ak=七牛图床的Access Key
-    sl=七牛图床的Secret Key
+    sk=七牛图床的Secret Key
     url=七牛图床地址
     bucket=七牛图床空间名
     prefix=七牛图床资源前缀名'''
