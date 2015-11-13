@@ -1,34 +1,45 @@
 # -*- coding: utf-8 -*-
-import time, os
+import os
+import tempfile
+
 from AppKit import NSPasteboard, NSPasteboardTypePNG, NSPasteboardTypeTIFF, NSPasteboardTypeString
 
 def get_paste_img_file():
+    ''' get a img file from clipboard;
+    the return object is a `tempfile.NamedTemporaryFile`
+    you can use the name field to access the file path.
+    the tmp file will be delete as soon as possible(when gc happened or close explicitly)
+    you can not just return a path, must hold the reference'''
+
     pb = NSPasteboard.generalPasteboard()
     data_type = pb.types()
     # if img file
-    print data_type
-    now = int(time.time() * 1000) # used for filename
-    if NSPasteboardTypePNG in data_type:
-        # png
+    # print data_type
+    # always generate png format img
+    png_file = tempfile.NamedTemporaryFile(suffix="png")
+
+    supported_image_format = (NSPasteboardTypePNG, NSPasteboardTypeTIFF)
+    if any(filter(lambda f: f in data_type, supported_image_format)):
+        # do not care which format it is, we convert it to png finally
+        # system screen shotcut is png, QQ is tiff
+        tmp_img_file = tempfile.NamedTemporaryFile()
         data = pb.dataForType_(NSPasteboardTypePNG)
-        filename = '%s.png' % now
-        filepath = '/tmp/%s' % filename
-        ret = data.writeToFile_atomically_(filepath, False)
-        if ret:
-            return filepath
-    elif NSPasteboardTypeTIFF in data_type:
-        # tiff
-        data = pb.dataForType_(NSPasteboardTypeTIFF)
-        filename = '%s.tiff' % now
-        filepath = '/tmp/%s' % filename
-        ret = data.writeToFile_atomically_(filepath, False)
-        if ret:
-            os.system('sips -s format tiff /tmp/%s.tiff --out /tmp/%s.png' % (now, now))
-            return '/tmp/%s.png' % now
+        ret = data.writeToFile_atomically_(tmp_img_file.name, False)
+        if not ret: return
+
+        # convert it to png file
+        os.system('sips -s format png %s --out %s' % (tmp_img_file.name, png_file.name))
+
+        # close the file explicitly
+        tmp_img_file.close()
+        return png_file
+    
     elif NSPasteboardTypeString in data_type:
         # string todo, recognise url of png & jpg
         pass
 
+if __name__ == '__main__':
+    get_paste_img_file()
 
 
 
