@@ -21,6 +21,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>BE152935-4073-489A-8624-D4410C803C1B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D8445579-037E-4FFF-84EA-61E88AF60C5A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>weishu</string>
@@ -111,6 +122,52 @@ else:
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import util
+import os
+
+if not os.path.exists(util.CONFIG_FILE):
+    util.generate_config_file()
+
+util.open_with_editor(util.CONFIG_FILE)</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>D8445579-037E-4FFF-84EA-61E88AF60C5A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>mdimgsetup</string>
+				<key>subtext</key>
+				<string>设置markdown图片上传图床的信息</string>
+				<key>text</key>
+				<string>markdown img设置</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>BE152935-4073-489A-8624-D4410C803C1B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -125,6 +182,16 @@ else:
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
+		</dict>
+		<key>BE152935-4073-489A-8624-D4410C803C1B</key>
+		<dict>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+		<key>D8445579-037E-4FFF-84EA-61E88AF60C5A</key>
+		<dict>
+			<key>ypos</key>
+			<real>150</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>
