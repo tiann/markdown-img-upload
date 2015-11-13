@@ -14,12 +14,16 @@ def get_paste_img_file():
     pb = NSPasteboard.generalPasteboard()
     data_type = pb.types()
     # if img file
-    # print data_type
+    print data_type
     # always generate png format img
     png_file = tempfile.NamedTemporaryFile(suffix="png")
 
     supported_image_format = (NSPasteboardTypePNG, NSPasteboardTypeTIFF)
-    if any(filter(lambda f: f in data_type, supported_image_format)):
+    if NSPasteboardTypeString in data_type:
+        # make this be first, because plain text may be TIFF format?
+        # string todo, recognise url of png & jpg
+        pass
+    elif any(filter(lambda f: f in data_type, supported_image_format)):
         # do not care which format it is, we convert it to png finally
         # system screen shotcut is png, QQ is tiff
         tmp_img_file = tempfile.NamedTemporaryFile()
@@ -33,11 +37,7 @@ def get_paste_img_file():
         # close the file explicitly
         tmp_img_file.close()
         return png_file
-    
-    elif NSPasteboardTypeString in data_type:
-        # string todo, recognise url of png & jpg
-        pass
-
+        
 if __name__ == '__main__':
     get_paste_img_file()
 
