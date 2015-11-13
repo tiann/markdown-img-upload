@@ -1,6 +1,6 @@
 markdown图片上传&插入实用工具
 
-这是一个方便在markdown格式的文档中插入截图的工具；能自动化完成图片上传，以及格式化为markdown格式实现无缝粘贴，体验起来就像直接把一张截图粘贴为一个markdown格式的图片链接一样。
+这是一个方便在markdown格式的文档中插入截图的工具；能自动化完成图片上传，格式化为markdown链接；实现无缝粘贴，体验起来就像直接**把一张截图粘贴为一个markdown格式的图片链接**一样。
 ## 预览
 
 <img src="http://7sbqce.com1.z0.glb.clouddn.com/markdownmarkdownimg.gif" width="660" />
@@ -47,9 +47,9 @@ markdown图片上传&插入实用工具
 
 ## TODO
 1. 支持剪切版里面的文本格式的图片链接先下载然后上传到图床
-2. 图片过大时自动压缩
-3. qq截图的tiff格式暂时有bug
-4. 临时文件夹不使用/tmp 用TempFile解决。
+2. ~~图片过大时自动压缩~~
+3. ~~qq截图的tiff格式暂时有bug~~
+4. ~~临时文件夹不使用/tmp 用TempFile解决。~~
 
 
 
