@@ -110,8 +110,8 @@ if img_file:
     # make it to clipboard
     os.system("echo '%s' | pbcopy" % markdown_url)
     os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
-    ret = upload_qiniu(img_file.name, upload_name)
-    if not ret: util.notice("上传图片到图床失败，请检查网络后重试")
+    upload_file = util.try_compress_png(img_file)
+    if not upload_qiniu(upload_file.name, upload_name): util.notice("上传图片到图床失败，请检查网络后重试")
 else:
     util.notice("剪切版里没有图片！")
     </string>

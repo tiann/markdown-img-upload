@@ -26,16 +26,17 @@ def get_paste_img_file():
     elif any(filter(lambda f: f in data_type, supported_image_format)):
         # do not care which format it is, we convert it to png finally
         # system screen shotcut is png, QQ is tiff
-        tmp_img_file = tempfile.NamedTemporaryFile()
+        tmp_clipboard_img_file = tempfile.NamedTemporaryFile()
+        print tmp_clipboard_img_file.name
         data = pb.dataForType_(NSPasteboardTypePNG)
-        ret = data.writeToFile_atomically_(tmp_img_file.name, False)
+        ret = data.writeToFile_atomically_(tmp_clipboard_img_file.name, False)
         if not ret: return
 
         # convert it to png file
-        os.system('sips -s format png %s --out %s' % (tmp_img_file.name, png_file.name))
+        os.system('sips -s format png %s --out %s' % (tmp_clipboard_img_file.name, png_file.name))
 
         # close the file explicitly
-        tmp_img_file.close()
+        tmp_clipboard_img_file.close()
         return png_file
         
 if __name__ == '__main__':

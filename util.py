@@ -1,6 +1,7 @@
 # -*- coding: utf-8
-import os, re
+import os, re, subprocess
 import ConfigParser
+from tempfile import NamedTemporaryFile
 
 CONFIG_FILE = 'config.ini'
 
@@ -16,17 +17,12 @@ def read_config():
     cf.read(CONFIG_FILE)
 
     qiniu_section = 'qiniu'
+    keys = ('ak', 'sk', 'url', 'bucket', 'prefix')
     try:
-        ak = cf.get(qiniu_section, 'ak')
-        sk = cf.get(qiniu_section, 'sk')
-        url = cf.get(qiniu_section, 'url')
-        bucket = cf.get(qiniu_section, 'bucket')
-        prefix = cf.get(qiniu_section, 'prefix')
+        res = map(lambda x: cf.get(qiniu_section, x), keys)
     except ConfigParser.NoOptionError:
         return
     
-    keys = ('ak', 'sk', 'url', 'bucket', 'prefix')
-    res = (ak, sk, url, bucket, prefix)
     if not all(map(lambda x: re.match(r'\w+', x), res)):
         return
     return dict(zip(keys, res))
@@ -47,3 +43,10 @@ def generate_config_file():
     prefix=七牛图床资源前缀名'''
     with open(CONFIG_FILE, 'w') as fp:
         fp.write(textwrap.dedent(config_file_init_content))
+
+def try_compress_png(raw_img):
+    ''' use pngquant to compress:https://github.com/pornel/pngquant'''
+    if not os.path.exists(raw_img.name): return raw_img
+    tmp_file = NamedTemporaryFile()
+    return tmp_file if not subprocess.call('pngquant/pngquant --force %s -o %s' \
+        % (raw_img.name, tmp_file.name), shell=True) else raw_img
