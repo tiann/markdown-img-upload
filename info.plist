@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.weishu.markdownimg</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<array/>
+		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8BFF9926-79DA-413A-A4EB-63DB997DF739</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>BE152935-4073-489A-8624-D4410C803C1B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D8445579-037E-4FFF-84EA-61E88AF60C5A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>weishu</string>
+	<key>description</key>
+	<string>Utility to simplify the img upload in markdown</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>markdown img</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>9</integer>
+				<key>hotmod</key>
+				<integer>1310720</integer>
+				<key>hotstring</key>
+				<string>V</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string># coding: utf-8
+from clipboard import get_paste_img_file
+from upload import upload_qiniu
+import util
+import os
+import subprocess
+import sys
+import time
+
+if not os.path.exists(util.CONFIG_FILE):
+    util.generate_config_file()
+
+config = util.read_config()
+if not config:
+    util.notice('请先设置你的七牛图床信息')
+    util.open_with_editor(util.CONFIG_FILE)
+    sys.exit(0)
+
+url = '%s/%s' % (config['url'], config['prefix'])
+
+img_file, need_format = get_paste_img_file()
+if img_file:
+    # has image
+
+    # use time to generate a unique upload_file name, we can not use the tmp file name
+    upload_name = "%s.png" % int(time.time() * 1000) 
+    if need_format:
+        size_str = subprocess.check_output('sips -g pixelWidth %s | tail -n1 | cut -d" " -f4' % img_file.name, shell=True)
+        size = int(size_str.strip()) / 2
+        markdown_url = '&lt;img src="%s/%s" width="%d"/&gt;' % (url, upload_name, size)
+    else:
+        markdown_url = '%s/%s' % (url, upload_name)
+
+    # make it to clipboard
+    os.system("echo '%s' | pbcopy" % markdown_url)
+    os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
+    upload_file = util.try_compress_png(img_file)
+    if not upload_qiniu(upload_file.name, upload_name): util.notice("上传图片到图床失败，请检查网络后重试")
+else:
+    util.notice("剪切版里没有图片！")
+    </string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8BFF9926-79DA-413A-A4EB-63DB997DF739</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>import util
+import os
+
+if not os.path.exists(util.CONFIG_FILE):
+    util.generate_config_file()
+
+util.open_with_editor(util.CONFIG_FILE)</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>D8445579-037E-4FFF-84EA-61E88AF60C5A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>mdimgsetup</string>
+				<key>subtext</key>
+				<string>设置markdown图片上传图床的信息</string>
+				<key>text</key>
+				<string>markdown img设置</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>BE152935-4073-489A-8624-D4410C803C1B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>BE152935-4073-489A-8624-D4410C803C1B</key>
+		<dict>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+		<key>D8445579-037E-4FFF-84EA-61E88AF60C5A</key>
+		<dict>
+			<key>ypos</key>
+			<real>150</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>http://www.tianweishu.com</string>
+</dict>
+</plist>
