@@ -44,8 +44,9 @@ def generate_config_file():
     with open(CONFIG_FILE, 'w') as fp:
         fp.write(textwrap.dedent(config_file_init_content))
 
-def try_compress_png(raw_img):
+def try_compress_png(raw_img, need_compress):
     ''' use pngquant to compress:https://github.com/pornel/pngquant'''
+    if not need_compress: return raw_img
     if not os.path.exists(raw_img.name): return raw_img
     tmp_file = NamedTemporaryFile()
     return tmp_file if not subprocess.call('pngquant/pngquant --force %s -o %s' \

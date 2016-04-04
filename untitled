@@ -1,0 +1,8 @@
+import os
+def notice(msg, title="notice"): 
+    ''' notoce message in notification center'''
+    print "notice: %s" % msg
+    os.system('osascript -e \'display notification "%s" with title "%s"\'' % (msg, title))
+
+if __name__ == '__main__':
+	notice("test image")

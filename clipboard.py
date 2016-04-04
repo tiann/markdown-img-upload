@@ -8,7 +8,8 @@ from AppKit import NSPasteboard, NSPasteboardTypePNG,\
         NSPasteboardTypeTIFF, NSPasteboardTypeString,\
         NSFilenamesPboardType
 
-NONE_IMG = (None, False)
+# image_file, need_format, need_compress
+NONE_IMG = (None, False, None)
 
 def _convert_to_png(from_path, to_path):
     # convert it to png file
@@ -23,10 +24,6 @@ def get_paste_img_file():
 
     pb = NSPasteboard.generalPasteboard()
     data_type = pb.types()
-    # if img file
-    print data_type
-    # always generate png format img
-    png_file = tempfile.NamedTemporaryFile(suffix="png")
 
     supported_image_format = (NSPasteboardTypePNG, NSPasteboardTypeTIFF)
     if NSFilenamesPboardType in data_type:
@@ -38,15 +35,20 @@ def get_paste_img_file():
             # not image file 
             return NONE_IMG
 
-        if img_type not in ('png', 'jpeg'):
-            # now only support png & jpg
+        if img_type not in ('png', 'jpeg', 'gif'):
+            # now only support png & jpg & gif
             return NONE_IMG
 
+        is_gif = img_type == 'gif'
+        _file = tempfile.NamedTemporaryFile(suffix=img_type)
         tmp_clipboard_img_file = tempfile.NamedTemporaryFile()
         shutil.copy(img_path, tmp_clipboard_img_file.name)
-        _convert_to_png(tmp_clipboard_img_file.name, png_file.name)
+        if not is_gif:
+            _convert_to_png(tmp_clipboard_img_file.name, _file.name)
+        else:
+            shutil.copy(tmp_clipboard_img_file.name, _file.name)
         tmp_clipboard_img_file.close()
-        return png_file, False
+        return _file, False, 'gif' if is_gif else 'png'
 
     if NSPasteboardTypeString in data_type:
         # make this be first, because plain text may be TIFF format?
@@ -67,7 +69,7 @@ def get_paste_img_file():
         _convert_to_png(tmp_clipboard_img_file.name, png_file.name)
         # close the file explicitly
         tmp_clipboard_img_file.close()
-        return png_file, True
+        return png_file, True, 'png'
         
 if __name__ == '__main__':
     get_paste_img_file()
