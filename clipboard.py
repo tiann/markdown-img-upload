@@ -60,6 +60,7 @@ def get_paste_img_file():
         # system screen shotcut is png, QQ is tiff
         tmp_clipboard_img_file = tempfile.NamedTemporaryFile()
         print tmp_clipboard_img_file.name
+        png_file = tempfile.NamedTemporaryFile(suffix='png')
         for fmt in supported_image_format:
             data = pb.dataForType_(fmt)
             if data: break
