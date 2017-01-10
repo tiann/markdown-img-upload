@@ -74,7 +74,7 @@
 在前面，图床的信息拿到之后，在 alfred 里面输入`mdimgsetup`,就会弹出一个文本文档，如下：
 <img src="http://7sbqce.com1.z0.glb.clouddn.com/markdown/1447222708345.png" width="256"/>
 
-设置你的七牛图床的信息，AK，SK是访问密钥，url是上面配置的图床访问地址，bucket是空间名字，prefix是图床上传的前缀，这个可以随意配置，作为分类使用，比如我的时markdown
+设置你的七牛图床的信息，AK，SK是访问密钥，url是上面配置的图床访问地址，bucket是空间名字，prefix是图床上传的前缀，这个可以随意配置，作为分类使用，比如我的是 markdown。
 
 ## 使用
 
